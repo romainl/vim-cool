@@ -25,7 +25,7 @@ if &hlsearch
 
     cnoremap <silent> <expr> <CR> <sid>Cool()
 
-    autocmd! CursorMoved * silent call <sid>Cooler()
+    autocmd! CursorMoved * call <sid>Cooler()
 
     function! s:Cool()
         let cmd = getcmdtype()
@@ -37,11 +37,15 @@ if &hlsearch
     endfunction
 
     function! s:Cooler()
+        let save_cursor = getcurpos()
         if expand("<cword>") =~ @/
             set hlsearch
         else
-            set nohlsearch
+            if &hlsearch
+                set nohlsearch
+            endif
         endif
+        call setpos('.', save_cursor)
     endfunction
 endif
 
