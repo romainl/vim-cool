@@ -23,6 +23,9 @@ if &hlsearch
     nnoremap <silent> * *:set hlsearch<CR>
     nnoremap <silent> # #:set hlsearch<CR>
 
+    nnoremap <silent> g* g*:set hlsearch<CR>
+    nnoremap <silent> g# g#:set hlsearch<CR>
+
     cnoremap <silent> <expr> <CR> <sid>Cool()
 
     autocmd! CursorMoved * call <sid>Cooler()
