@@ -31,8 +31,7 @@ if &hlsearch
     autocmd! CursorMoved * call <sid>Cooler()
 
     function! s:Cool()
-        let cmd = getcmdtype()
-        if cmd == "/" || cmd == "?"
+        if getcmdtype() =~ '[/?]'
             return "\<CR>:set hlsearch\<CR>"
         else
             return "\<CR>"
@@ -40,7 +39,7 @@ if &hlsearch
     endfunction
 
     function! s:Cooler()
-        let save_cursor = getcurpos()
+        let save_cursor = exists("*getcurpos") ? getcurpos() : getpos(".")
         if expand("<cword>") =~ @/
             set hlsearch
         else
