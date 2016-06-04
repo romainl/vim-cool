@@ -14,8 +14,8 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 if &hlsearch
-    nnoremap / :silent set hlsearch<CR>/
-    nnoremap ? :silent set hlsearch<CR>?
+    nnoremap / :silent nohlsearch<CR>/
+    nnoremap ? :silent nohlsearch<CR>?
 
     nnoremap <silent> n n:set hlsearch<CR>
     nnoremap <silent> N N:set hlsearch<CR>
