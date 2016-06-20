@@ -28,7 +28,7 @@ if &hlsearch
 
     cnoremap <silent> <expr> <CR> <sid>Cool()
 
-    autocmd! CursorMoved * call <sid>Cooler()
+    autocmd! CursorMoved * silent! call <sid>Cooler()
 
     function! s:Cool()
         if getcmdtype() =~ '[/?]'
