@@ -14,17 +14,34 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 if &hlsearch
-    nnoremap / :silent nohlsearch<CR>/
-    nnoremap ? :silent nohlsearch<CR>?
+    let s:CRmap = maparg('<CR>', 'c', 0, 1)
+    let s:CRfunc = ""
 
-    nnoremap <silent> n n:set hlsearch<CR>
-    nnoremap <silent> N N:set hlsearch<CR>
+    function! s:CRFUNC()
+        return "\<CR>"
+    endfunction
 
-    nnoremap <silent> * *:set hlsearch<CR>
-    nnoremap <silent> # #:set hlsearch<CR>
+    if !empty(s:CRmap)
+        if s:CRmap.expr == 1 && s:CRmap.rhs =~ '()$'
+            let s:CRfunc = function(substitute(s:CRmap.rhs, '()$', '', ''))
+        else
+            let s:CRfunc = function('<sid>CRFUNC')
+        endif
+    else
+        let s:CRfunc = function('<sid>CRFUNC')
+    endif
 
-    nnoremap <silent> g* g*:set hlsearch<CR>
-    nnoremap <silent> g# g#:set hlsearch<CR>
+    execute "nnoremap / :silent nohlsearch" . s:CRfunc() . "/"
+    execute "nnoremap ? :silent nohlsearch" . s:CRfunc() . "?"
+
+    execute "nnoremap <silent> n n:set hlsearch" . s:CRfunc()
+    execute "nnoremap <silent> N N:set hlsearch" . s:CRfunc()
+
+    execute "nnoremap <silent> * *:set hlsearch" . s:CRfunc()
+    execute "nnoremap <silent> # #:set hlsearch" . s:CRfunc()
+
+    execute "nnoremap <silent> g* g*:set hlsearch" . s:CRfunc()
+    execute "nnoremap <silent> g# g#:set hlsearch" . s:CRfunc()
 
     cnoremap <silent> <expr> <CR> <sid>Cool()
 
@@ -32,9 +49,9 @@ if &hlsearch
 
     function! s:Cool()
         if getcmdtype() =~ '[/?]'
-            return "\<CR>:set hlsearch\<CR>"
+            return s:CRfunc() . ":set hlsearch\<CR>"
         else
-            return "\<CR>"
+            return s:CRfunc()
         endif
     endfunction
 
