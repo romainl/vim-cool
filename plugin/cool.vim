@@ -43,6 +43,15 @@ if &hlsearch
     execute "nnoremap <silent> g* g*:set hlsearch" . s:CRfunc()
     execute "nnoremap <silent> g# g#:set hlsearch" . s:CRfunc()
 
+    inoremap <silent> <C-o>n <C-o>n<C-o>:set hlsearch
+    inoremap <silent> <C-o>N <C-o>N<C-o>:set hlsearch
+
+    inoremap <silent> <C-o>* <C-o>:let @/ = "\\<" . expand("<cword>") . "\\>"<C-o>n<C-o>:set hlsearch
+    inoremap <silent> <C-o># <C-o>:let @/ = "\\<" . expand("<cword>") . "\\>"<C-o>n<C-o>N<C-o>N<C-o>:set hlsearch
+
+    inoremap <silent> <C-o>g* <C-o>:let @/ = expand("<cword>")<C-o>n<C-o>:set hlsearch
+    inoremap <silent> <C-o>g# <C-o>:let @/ = expand("<cword>")<C-o>n<C-o>N<C-o>N<C-o>:set hlsearch
+
     cnoremap <silent> <expr> <CR> <sid>Cool()
 
     autocmd! CursorMoved * silent! call <sid>Cooler()
