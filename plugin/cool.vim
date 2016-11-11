@@ -26,16 +26,16 @@ if &hlsearch
     nnoremap <silent> g* g*:set hlsearch<CR>
     nnoremap <silent> g# g#:set hlsearch<CR>
 
-    inoremap <silent> <C-o>n <C-o>n<C-o>:set hlsearch
-    inoremap <silent> <C-o>N <C-o>N<C-o>:set hlsearch
+    inoremap <silent> <C-o>n <C-o>n<C-o>:set hlsearch<CR>
+    inoremap <silent> <C-o>N <C-o>N<C-o>:set hlsearch<CR>
 
-    inoremap <silent> <C-o>* <C-o>:let @/ = "\\<" . expand("<cword>") . "\\>"<C-o>n<C-o>:set hlsearch
-    inoremap <silent> <C-o># <C-o>:let @/ = "\\<" . expand("<cword>") . "\\>"<C-o>n<C-o>N<C-o>N<C-o>:set hlsearch
+    inoremap <silent> <C-o>* <C-o>:let @/ = "\\<" . expand("<cword>") . "\\>"<C-o>n<C-o>:set hlsearch<CR>
+    inoremap <silent> <C-o># <C-o>:let @/ = "\\<" . expand("<cword>") . "\\>"<C-o>n<C-o>N<C-o>N<C-o>:set hlsearch<CR>
 
-    inoremap <silent> <C-o>g* <C-o>:let @/ = expand("<cword>")<C-o>n<C-o>:set hlsearch
-    inoremap <silent> <C-o>g# <C-o>:let @/ = expand("<cword>")<C-o>n<C-o>N<C-o>N<C-o>:set hlsearch
+    inoremap <silent> <C-o>g* <C-o>:let @/ = expand("<cword>")<C-o>n<C-o>:set hlsearch<CR>
+    inoremap <silent> <C-o>g# <C-o>:let @/ = expand("<cword>")<C-o>n<C-o>N<C-o>N<C-o>:set hlsearch<CR>
 
-    cnoremap <silent> <expr> <CR> <sid>Cool()
+    cmap <silent> <expr> <CR> <sid>Cool()
 
     autocmd! CursorMoved * silent! call <sid>Cooler()
 
