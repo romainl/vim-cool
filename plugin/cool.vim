@@ -15,6 +15,7 @@ set cpo&vim
 
 augroup Cool
     autocmd!
+    " toggle coolness when hlsearch is toggled
     autocmd OptionSet hlsearch call <SID>PlayItCool(v:option_new)
 augroup END
 
@@ -35,12 +36,14 @@ endfunction
 
 function! s:PlayItCool(hls)
     if a:hls == 1
+        " set up coolness
         noremap  <expr> <Plug>(StopHL) execute('nohlsearch')[-1]
         noremap! <expr> <Plug>(StopHL) execute('nohlsearch')[-1]
 
         autocmd Cool CursorMoved * call <SID>StartHL()
         autocmd Cool InsertEnter * call <SID>StopHL()
     else
+        " tear down coolness
         nunmap <expr> <Plug>(StopHL)
         unmap! <expr> <Plug>(StopHL)
 
