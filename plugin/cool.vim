@@ -1,6 +1,6 @@
 " vim-cool - Disable hlsearch when you are done searching.
 " Maintainer:	romainl <romainlafourcade@gmail.com>
-" Version:	0.0.1
+" Version:	0.0.2
 " License:	MIT License
 " Location:	plugin/cool.vim
 " Website:	https://github.com/romainl/vim-cool
@@ -13,51 +13,52 @@ let g:loaded_cool = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-if &hlsearch
-    nnoremap / :silent nohlsearch<CR>/
-    nnoremap ? :silent nohlsearch<CR>?
+augroup Cool
+    autocmd!
+    " toggle coolness when hlsearch is toggled
+    autocmd OptionSet hlsearch call <SID>PlayItCool(v:option_old, v:option_new)
+augroup END
 
-    nnoremap <silent> n n:set hlsearch<CR>
-    nnoremap <silent> N N:set hlsearch<CR>
+function! s:StartHL()
+    let s:pos = match(getline('.'), @/, col('.') - 1) + 1
+    if s:pos != col('.')
+        call <SID>StopHL()
+    endif
+endfunction
 
-    nnoremap <silent> * *:set hlsearch<CR>
-    nnoremap <silent> # #:set hlsearch<CR>
+function! s:StopHL()
+    if !v:hlsearch || mode() isnot 'n'
+        return
+    else
+        silent call feedkeys("\<Plug>(StopHL)", 'm')
+    endif
+endfunction
 
-    nnoremap <silent> g* g*:set hlsearch<CR>
-    nnoremap <silent> g# g#:set hlsearch<CR>
+function! s:PlayItCool(old, new)
+    if a:old == 0 && a:new == 1
+        " nohls --> hls
+        "   set up coolness
+        noremap  <expr> <Plug>(StopHL) execute('nohlsearch')[-1]
+        noremap! <expr> <Plug>(StopHL) execute('nohlsearch')[-1]
 
-    inoremap <silent> <C-o>n <C-o>n<C-o>:set hlsearch<CR>
-    inoremap <silent> <C-o>N <C-o>N<C-o>:set hlsearch<CR>
+        autocmd Cool CursorMoved * call <SID>StartHL()
+        autocmd Cool InsertEnter * call <SID>StopHL()
+    elseif a:old == 1 && a:new == 0
+        " hls --> nohls
+        "   tear down coolness
+        nunmap <expr> <Plug>(StopHL)
+        unmap! <expr> <Plug>(StopHL)
 
-    inoremap <silent> <C-o>* <C-o>:let @/ = "\\<" . expand("<cword>") . "\\>"<C-o>n<C-o>:set hlsearch<CR>
-    inoremap <silent> <C-o># <C-o>:let @/ = "\\<" . expand("<cword>") . "\\>"<C-o>n<C-o>N<C-o>N<C-o>:set hlsearch<CR>
+        autocmd! Cool CursorMoved
+        autocmd! Cool InsertEnter
+    else
+        " nohls --> nohls
+        "   do nothing
+        return
+    endif
+endfunction
 
-    inoremap <silent> <C-o>g* <C-o>:let @/ = expand("<cword>")<C-o>n<C-o>:set hlsearch<CR>
-    inoremap <silent> <C-o>g# <C-o>:let @/ = expand("<cword>")<C-o>n<C-o>N<C-o>N<C-o>:set hlsearch<CR>
-
-    cmap <silent> <expr> <CR> <sid>Cool()
-
-    autocmd! CursorMoved * silent! call <sid>Cooler()
-
-    function! s:Cool()
-        if getcmdtype() =~ '[/?]'
-            return "\<CR>:set hlsearch\<CR>"
-        else
-            return "\<CR>"
-        endif
-    endfunction
-
-    function! s:Cooler()
-        let save_cursor = exists("*getcurpos") ? getcurpos() : getpos(".")
-        if expand("<cword>") =~ @/
-            set hlsearch
-        else
-            if &hlsearch
-                set nohlsearch
-            endif
-        endif
-        call setpos('.', save_cursor)
-    endfunction
-endif
+" play it cool
+call <SID>PlayItCool(0, &hlsearch)
 
 let &cpo = s:save_cpo
