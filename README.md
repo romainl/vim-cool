@@ -6,7 +6,7 @@ Vim-cool is cool.
 
 ## Installation
 
-Follow your favorite plugin/runtimepath manager's instruction.
+Follow your favorite plugin/runtimepath manager's instructions.
 
 If you choose manual installation, just put `plugin/cool.vim` where it belongs:
 
