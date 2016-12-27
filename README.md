@@ -4,6 +4,10 @@ Vim-cool disables search highlighting when you are done searching and re-enables
 
 Vim-cool is cool.
 
+## Requirements
+
+Vim-cool is intended to be used with Vim, **and only Vim**, 7.4.2008 or later.
+
 ## Installation
 
 Follow your favorite plugin/runtimepath manager's instructions.
