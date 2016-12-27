@@ -21,7 +21,7 @@ augroup END
 
 function! s:StartHL()
     if v:hlsearch
-        let s:pos = match(getline('.'), @/, col('.') - 1) + 1
+        let s:pos = match(getline('.'), @/, col('.')) + 1
         if s:pos != col('.')
             call <SID>StopHL()
         endif
