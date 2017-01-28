@@ -20,10 +20,8 @@ augroup Cool
 augroup END
 
 function! s:StartHL()
-    if v:hlsearch
-        if !search('\%#'.@/,'cnW')
-            call <SID>StopHL()
-        endif
+    if v:hlsearch && !search('\%#'.@/,'cnW')
+        call <SID>StopHL()
     endif
 endfunction
 
