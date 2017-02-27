@@ -20,11 +20,8 @@ augroup Cool
 augroup END
 
 function! s:StartHL()
-    if v:hlsearch
-        let s:pos = match(getline('.'), @/, col('.')) + 1
-        if s:pos != col('.')
-            call <SID>StopHL()
-        endif
+    silent! if v:hlsearch && !search('\%#\zs'.@/,'cnW')
+        call <SID>StopHL()
     endif
 endfunction
 
@@ -33,6 +30,7 @@ function! s:StopHL()
         return
     else
         silent call feedkeys("\<Plug>(StopHL)", 'm')
+        silent call feedkeys("\<C-l>", 'n')
     endif
 endfunction
 
@@ -48,7 +46,7 @@ function! s:PlayItCool(old, new)
     elseif a:old == 1 && a:new == 0
         " hls --> nohls
         "   tear down coolness
-        nunmap <expr> <Plug>(StopHL)
+        unmap  <expr> <Plug>(StopHL)
         unmap! <expr> <Plug>(StopHL)
 
         autocmd! Cool CursorMoved
