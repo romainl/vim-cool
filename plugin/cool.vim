@@ -37,16 +37,16 @@ function! s:PlayItCool(old, new)
     if a:old == 0 && a:new == 1
         " nohls --> hls
         "   set up coolness
-        noremap  <expr> <Plug>(StopHL) execute('nohlsearch')[-1]
-        noremap! <expr> <Plug>(StopHL) execute('nohlsearch')[-1]
+        noremap  <silent><Plug>(StopHL) :<C-U>nohlsearch<cr>
+        noremap! <silent><Plug>(StopHL) :<C-U>nohlsearch<cr>
 
         autocmd Cool CursorMoved * call <SID>StartHL()
         autocmd Cool InsertEnter * call <SID>StopHL()
     elseif a:old == 1 && a:new == 0
         " hls --> nohls
         "   tear down coolness
-        nunmap <expr> <Plug>(StopHL)
-        unmap! <expr> <Plug>(StopHL)
+        nunmap <Plug>(StopHL)
+        unmap! <Plug>(StopHL)
 
         autocmd! Cool CursorMoved
         autocmd! Cool InsertEnter
