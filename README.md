@@ -8,7 +8,7 @@ Vim-cool is *experimental*.
 
 ## Requirements
 
-Vim-cool is intended to be used with Vim, **and only Vim**, 7.4.2008 or later.
+Vim-cool works best when used with a contemporary vim install.
 
 ## Installation
 
