@@ -38,7 +38,7 @@ function! s:PlayItCool(old, new)
         " nohls --> hls
         "   set up coolness
         noremap  <silent><Plug>(StopHL) :<C-U>nohlsearch<cr>
-        noremap! <silent><Plug>(StopHL) :<C-U>nohlsearch<cr>
+        noremap! <expr> <Plug>(StopHL) exists('*execute') ? execute('nohlsearch')[-1] : ''
 
         autocmd Cool CursorMoved * call <SID>StartHL()
         autocmd Cool InsertEnter * call <SID>StopHL()
@@ -46,7 +46,7 @@ function! s:PlayItCool(old, new)
         " hls --> nohls
         "   tear down coolness
         nunmap <Plug>(StopHL)
-        unmap! <Plug>(StopHL)
+        unmap! <expr> <Plug>(StopHL)
 
         autocmd! Cool CursorMoved
         autocmd! Cool InsertEnter
