@@ -14,6 +14,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 let s:saveh = &highlight
+
 augroup Cool
     autocmd!
     " toggle coolness when hlsearch is toggled
