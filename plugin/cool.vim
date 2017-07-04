@@ -39,7 +39,7 @@ function! s:AuNohlsearch()
     augroup CoolInt
         autocmd!
         " toggle highlighting, a workaround for :nohlsearch in autocmds
-        autocmd Insertleave * redraw! | let &highlight = s:saveh | autocmd! CoolInt *
+        autocmd Insertleave * redraw | let &highlight = s:saveh | autocmd! CoolInt *
     augroup END
     return ''
 endfunction
