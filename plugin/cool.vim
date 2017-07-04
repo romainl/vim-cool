@@ -36,12 +36,9 @@ endfunction
 function! s:AuNohlsearch()
     let s:saveh = &highlight
     set highlight+=l:-
-    augroup CoolInt
-        autocmd!
-        " toggle highlighting, a workaround for :nohlsearch in autocmds
-        autocmd Insertleave *
-                    \ let &highlight = s:saveh | autocmd! CoolInt *
-    augroup END
+    " toggle highlighting, a workaround for :nohlsearch in autocmds
+    autocmd Cool Insertleave *
+                \ let &highlight = s:saveh | autocmd! Cool InsertLeave *
     return ''
 endfunction
 
@@ -50,7 +47,8 @@ function! s:PlayItCool(old, new)
         " nohls --> hls
         "   set up coolness
         noremap  <silent><Plug>(StopHL) :<C-U>nohlsearch<cr>
-        noremap! <expr> <Plug>(StopHL) exists('*execute') ? execute('nohlsearch')[-1] : <SID>AuNohlsearch()
+        noremap! <expr> <Plug>(StopHL) exists('*execute') ?
+                    \ execute('nohlsearch')[-1] : <SID>AuNohlsearch()
 
         autocmd Cool CursorMoved * call <SID>StartHL()
         autocmd Cool InsertEnter * call <SID>StopHL()
