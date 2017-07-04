@@ -36,9 +36,9 @@ function! s:StopHL()
     endif
 endfunction
 
+" toggle highlighting, a workaround for :nohlsearch in autocmds
 function! s:AuNohlsearch()
     noau set highlight+=l:-
-    " toggle highlighting, a workaround for :nohlsearch in autocmds
     autocmd Cool Insertleave *
                 \ noau let &highlight = s:saveh | autocmd! Cool InsertLeave *
     return ''
