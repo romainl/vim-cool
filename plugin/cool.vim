@@ -13,10 +13,12 @@ let g:loaded_cool = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
+let s:saveh = &highlight
 augroup Cool
     autocmd!
     " toggle coolness when hlsearch is toggled
     autocmd OptionSet hlsearch call <SID>PlayItCool(v:option_old, v:option_new)
+    autocmd OptionSet highlight let s:saveh = &highlight
 augroup END
 
 function! s:StartHL()
@@ -34,11 +36,10 @@ function! s:StopHL()
 endfunction
 
 function! s:AuNohlsearch()
-    let s:saveh = &highlight
-    set highlight+=l:-
+    noau set highlight+=l:-
     " toggle highlighting, a workaround for :nohlsearch in autocmds
     autocmd Cool Insertleave *
-                \ let &highlight = s:saveh | autocmd! Cool InsertLeave *
+                \ noau let &highlight = s:saveh | autocmd! Cool InsertLeave *
     return ''
 endfunction
 
