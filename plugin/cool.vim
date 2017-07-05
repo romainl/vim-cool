@@ -19,6 +19,11 @@ augroup Cool
     autocmd OptionSet hlsearch call <SID>PlayItCool(v:option_old, v:option_new)
 augroup END
 
+if !exists('*execute')
+    let s:saveh = &highlight
+    autocmd Cool OptionSet highlight let s:saveh = &highlight
+endif
+
 function! s:StartHL()
     silent! if v:hlsearch && !search('\%#\zs'.@/,'cnW')
         call <SID>StopHL()
@@ -33,12 +38,26 @@ function! s:StopHL()
     endif
 endfunction
 
+if exists('s:saveh')
+    " toggle highlighting, a workaround for :nohlsearch in autocmds
+    function! s:AuNohlsearch()
+        noau set highlight+=l:-
+        autocmd Cool Insertleave *
+                    \ noau let &highlight = s:saveh | autocmd! Cool InsertLeave *
+        return ''
+    endfunction
+endif
+
 function! s:PlayItCool(old, new)
     if a:old == 0 && a:new == 1
         " nohls --> hls
         "   set up coolness
         noremap  <silent><Plug>(StopHL) :<C-U>nohlsearch<cr>
-        noremap! <expr> <Plug>(StopHL) exists('*execute') ? execute('nohlsearch')[-1] : ''
+        if exists('s:saveh')
+            noremap!  <expr> <Plug>(StopHL) <SID>AuNohlsearch()
+        else
+            noremap!  <expr> <Plug>(StopHL) execute('nohlsearch')[-1]
+        endif
 
         autocmd Cool CursorMoved * call <SID>StartHL()
         autocmd Cool InsertEnter * call <SID>StopHL()
