@@ -28,11 +28,10 @@ function! s:StartHL()
     if v:hlsearch && mode() !=# 'no'
         silent! if !search('\%#\zs'.@/,'cnW')
             call <SID>StopHL()
-        else
-            let s:noOf = [0,0]
-            let pos = getpos('.')
+        elseif exists('*reltimefloat')
+            let [now, s:noOf, pos] = [reltime(), [0,0], getpos('.')]
             try
-                while search(@/,'W')
+                while !float2nr(round(reltimefloat(reltime(now)))) && search(@/,'W')
                     if getchar(1) == 0
                         let s:noOf[1] += 1
                     else
@@ -40,7 +39,7 @@ function! s:StartHL()
                     endif
                 endwhile
                 call setpos('.',pos)
-                while search(@/,'bW')
+                while !float2nr(round(reltimefloat(reltime(now)))) && search(@/,'bW')
                     if getchar(1) == 0
                         let s:noOf[0] += 1
                     else
