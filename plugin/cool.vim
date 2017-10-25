@@ -31,16 +31,16 @@ function! s:StartHL()
         elseif exists('*reltimefloat')
             let [now, s:noOf, pos] = [reltime(), [0,0], getpos('.')]
             try
-                while !float2nr(round(reltimefloat(reltime(now)))) && search(@/,'W')
-                    if getchar(1) == 0
+                while search(@/,'W')
+                    if !float2nr(round(reltimefloat(reltime(now))))
                         let s:noOf[1] += 1
                     else
                         return
                     endif
                 endwhile
                 call setpos('.',pos)
-                while !float2nr(round(reltimefloat(reltime(now)))) && search(@/,'bW')
-                    if getchar(1) == 0
+                while search(@/,'bW')
+                    if !float2nr(round(reltimefloat(reltime(now))))
                         let s:noOf[0] += 1
                     else
                         return
@@ -50,7 +50,7 @@ function! s:StartHL()
                 call setpos('.',pos)
             endtry
             redraw
-            echo 'match' s:noOf[0] + 1 'of' s:noOf[0] + s:noOf[1] + 1
+            echo (v:searchforward ? '/' : '?').@/.' match' s:noOf[0] + 1 'of' s:noOf[0] + s:noOf[1] + 1
         endif
     endif
 endfunction
