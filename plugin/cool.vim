@@ -25,8 +25,34 @@ if !exists('*execute')
 endif
 
 function! s:StartHL()
-    silent! if v:hlsearch && !search('\%#\zs'.@/,'cnW')
-        call <SID>StopHL()
+    if v:hlsearch && mode() !=# 'no'
+        silent! if !search('\%#\zs'.@/,'cnW')
+            call <SID>StopHL()
+        else
+            let s:noOf = [0,0]
+            let pos = getpos('.')
+            try
+                while search(@/,'W')
+                    if getchar(1) == 0
+                        let s:noOf[1] += 1
+                    else
+                        return
+                    endif
+                endwhile
+                call setpos('.',pos)
+                while search(@/,'bW')
+                    if getchar(1) == 0
+                        let s:noOf[0] += 1
+                    else
+                        return
+                    endif
+                endwhile
+            finally
+                call setpos('.',pos)
+            endtry
+            redraw
+            echo 'match' s:noOf[0] + 1 'of' s:noOf[0] + s:noOf[1] + 1
+        endif
     endif
 endfunction
 
