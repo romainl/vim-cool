@@ -29,11 +29,11 @@ function! s:StartHL()
         silent! if !search('\%#\zs'.@/,'cnW')
             call <SID>StopHL()
         elseif exists('*reltimefloat')
-            let [now, s:noOf, pos] = [reltime(), [0,0], getpos('.')]
+            let [now, noOf, pos] = [reltime(), [0,0], getpos('.')]
             try
                 while search(@/,'W')
                     if !float2nr(round(reltimefloat(reltime(now))))
-                        let s:noOf[1] += 1
+                        let noOf[1] += 1
                     else
                         return
                     endif
@@ -41,7 +41,7 @@ function! s:StartHL()
                 call setpos('.',pos)
                 while search(@/,'bW')
                     if !float2nr(round(reltimefloat(reltime(now))))
-                        let s:noOf[0] += 1
+                        let noOf[0] += 1
                     else
                         return
                     endif
@@ -50,7 +50,7 @@ function! s:StartHL()
                 call setpos('.',pos)
             endtry
             redraw
-            echo (v:searchforward ? '/' : '?').@/.' match' s:noOf[0] + 1 'of' s:noOf[0] + s:noOf[1] + 1
+            echo (v:searchforward ? '/' : '?').@/ 'match' noOf[0] + 1 'of' noOf[0] + noOf[1] + 1
         endif
     endif
 endfunction
