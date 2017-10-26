@@ -31,8 +31,9 @@ function! s:StartHL()
         elseif exists('*reltimefloat')
             let [now, noOf, pos] = [reltime(), [0,0], getpos('.')]
             try
+                " timeout == 100ms
                 while search(@/,'W')
-                    if !float2nr(round(reltimefloat(reltime(now))))
+                    if !float2nr(round(0.4+reltimefloat(reltime(now))))
                         let noOf[1] += 1
                     else
                         return
@@ -40,7 +41,7 @@ function! s:StartHL()
                 endwhile
                 call setpos('.',pos)
                 while search(@/,'bW')
-                    if !float2nr(round(reltimefloat(reltime(now))))
+                    if !float2nr(round(0.4+reltimefloat(reltime(now))))
                         let noOf[0] += 1
                     else
                         return
