@@ -48,7 +48,7 @@ function! s:StartHL()
                 call setpos('.',pos)
             endtry
             let searchtype = nr2char(screenchar(&lines-(&cmdheight-1),1))
-            redraw
+            echo ''
             if searchtype !~ '[/?]'
                 " search hit BOTTOM, continuing at TOP
                 echohl WarningMsg | echo v:warningmsg | echohl None
