@@ -30,23 +30,17 @@ function! s:StartHL()
             call <SID>StopHL()
         elseif exists('*reltimefloat')
             let [now, noOf, pos] = [reltime(), [0,0], getpos('.')]
-            try " timeout == 100ms
-                while search(@/,'W')
+            for b in [0,1]
+                while search(@/, 'Wb'[:b])
                     if float2nr(round(0.4+reltimefloat(reltime(now))))
+                        " time >= 100ms
+                        call setpos('.',pos)
                         return
                     endif
-                    let noOf[1] += 1
+                    let noOf[!b] += 1
                 endwhile
                 call setpos('.',pos)
-                while search(@/,'bW')
-                    if float2nr(round(0.4+reltimefloat(reltime(now))))
-                        return
-                    endif
-                    let noOf[0] += 1
-                endwhile
-            finally
-                call setpos('.',pos)
-            endtry
+            endfor
             let searchtype = nr2char(screenchar(&lines-(&cmdheight-1),1))
             redraw
             if searchtype !~ '[/?]'
