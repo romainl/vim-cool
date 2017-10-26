@@ -30,8 +30,7 @@ function! s:StartHL()
             call <SID>StopHL()
         elseif exists('*reltimefloat')
             let [now, noOf, pos] = [reltime(), [0,0], getpos('.')]
-            try
-                " timeout == 100ms
+            try " timeout == 100ms
                 while search(@/,'W')
                     if !float2nr(round(0.4+reltimefloat(reltime(now))))
                         let noOf[1] += 1
