@@ -42,11 +42,8 @@ function! s:StartHL()
                 call setpos('.',pos)
             endfor
             let searchtype = nr2char(screenchar(&lines-(&cmdheight-1),1))
-            redraw
-            if searchtype !~ '[/?]'
-                " search hit BOTTOM, continuing at TOP
-                echohl WarningMsg | echo v:warningmsg | echohl None
-            else
+            if searchtype =~ '[/?]'
+                redraw
                 echo searchtype.@/ 'match' noOf[0] + 1 'of' noOf[0] + noOf[1] + 1
             endif
         endif
