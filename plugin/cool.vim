@@ -15,13 +15,14 @@ set cpo&vim
 
 augroup Cool
     autocmd!
-    " toggle coolness when hlsearch is toggled
-    autocmd OptionSet hlsearch call <SID>PlayItCool(v:option_old, v:option_new)
 augroup END
 
-if !exists('*execute')
-    let s:saveh = &highlight
-    autocmd Cool OptionSet highlight let s:saveh = &highlight
+if exists('##OptionSet')
+    if !exists('*execute')
+        autocmd Cool OptionSet highlight let s:saveh = &highlight
+    endif
+    " toggle coolness when hlsearch is toggled
+    autocmd Cool OptionSet hlsearch call <SID>PlayItCool(v:option_old, v:option_new)
 endif
 
 function! s:StartHL()
@@ -57,7 +58,8 @@ function! s:StopHL()
     endif
 endfunction
 
-if exists('s:saveh')
+if !exists('*execute')
+    let s:saveh = &highlight
     " toggle highlighting, a workaround for :nohlsearch in autocmds
     function! s:AuNohlsearch()
         noautocmd set highlight+=l:-
@@ -72,7 +74,7 @@ function! s:PlayItCool(old, new)
         " nohls --> hls
         "   set up coolness
         noremap <silent> <Plug>(StopHL) :<C-U>nohlsearch<cr>
-        if exists('s:saveh')
+        if !exists('*execute')
             noremap! <expr> <Plug>(StopHL) <SID>AuNohlsearch()
         else
             noremap! <expr> <Plug>(StopHL) execute('nohlsearch')[-1]
