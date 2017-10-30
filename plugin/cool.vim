@@ -41,7 +41,8 @@ function! s:StartHL()
                 endwhile
                 call setpos('.',pos)
             endfor
-            let searchtype = nr2char(screenchar(&lines-(&cmdheight-1),1))
+            exe "silent! norm! :let g:cool_lines=screenrow()\<cr>"
+            let searchtype = nr2char(screenchar(g:cool_lines,1))
             if searchtype =~ '[/?]'
                 redraw
                 echo searchtype.@/ 'match' noOf[0] + 1 'of' noOf[0] + noOf[1] + 1
