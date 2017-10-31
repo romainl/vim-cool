@@ -25,7 +25,7 @@ if !exists('*execute')
 endif
 
 function! s:StartHL()
-    if mode() !~# "[vV\<C-V>]" && v:hlsearch
+    if v:hlsearch && mode() !~# "[vV\<C-V>]"
         silent! if !search('\%#\zs'.@/,'cnW')
             call <SID>StopHL()
         elseif exists('*reltimestr') && has('float')
