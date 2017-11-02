@@ -28,13 +28,13 @@ function! s:StartHL()
     if v:hlsearch && mode() is 'n'
         silent! if !search('\%#\zs'.@/,'cnW')
             call <SID>StopHL()
-        elseif exists('*reltimestr') && has('float')
+        elseif exists('*reltimestr')
             exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
             if g:cool_char =~ '[/?]'
                 let [now, noOf, pos] = [reltime(), [0,0], getpos('.')]
                 for b in [0,1]
                     while search(@/, 'Wb'[:b])
-                        if float2nr(round(0.4+eval(reltimestr(reltime(now)))))
+                        if 0.1 <= eval(reltimestr(reltime(now))[:-6])
                             " time >= 100ms
                             call setpos('.',pos)
                             return
