@@ -34,7 +34,7 @@ function! s:StartHL()
                 let [now, noOf, pos] = [reltime(), [0,0], getpos('.')]
                 for b in [0,1]
                     while search(@/, 'Wb'[:b])
-                        if 0.1 <= eval(reltimestr(reltime(now))[:-6])
+                        if reltimestr(reltime(now)) =~ '\d\@<![1-9]'
                             " time >= 100ms
                             call setpos('.',pos)
                             return
