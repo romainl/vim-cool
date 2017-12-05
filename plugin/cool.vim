@@ -25,8 +25,12 @@ if exists('##OptionSet')
     autocmd Cool OptionSet hlsearch call <SID>PlayItCool(v:option_old, v:option_new)
 endif
 
+function! s:FixPat(pat)
+    return (&ignorecase && a:pat !~# '\%(^\|[^\\]\)\%(\\\\\)*\\C'? '\c' : '').a:pat
+endfunction
+
 function! s:StartHL()
-    silent! if v:hlsearch && !search('\%#\zs'.@/,'cnW')
+    silent! if v:hlsearch && !search('\%#\zs'.s:FixPat(@/),'cnW')
         call <SID>StopHL()
     endif
 endfunction
