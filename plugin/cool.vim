@@ -15,26 +15,32 @@ set cpo&vim
 
 augroup Cool
     autocmd!
-    " toggle coolness when hlsearch is toggled
-    autocmd OptionSet hlsearch call <SID>PlayItCool(v:option_old, v:option_new)
 augroup END
 
-if !exists('*execute')
-    let s:saveh = &highlight
-    autocmd Cool OptionSet highlight let s:saveh = &highlight
+if exists('##OptionSet')
+    if !exists('*execute')
+        autocmd Cool OptionSet highlight let s:saveh = &highlight
+    endif
+    " toggle coolness when hlsearch is toggled
+    autocmd Cool OptionSet hlsearch call <SID>PlayItCool(v:option_old, v:option_new)
 endif
 
+function! s:FixPat(pat)
+    return (&ignorecase && a:pat !~# '\%(^\|[^\\]\)\%(\\\\\)*\\C' ? '\c' : '').a:pat
+endfunction
+
 function! s:StartHL()
-    if v:hlsearch && mode() is 'n'
-        silent! if !search('\%#\zs'.@/,'cnW')
+    if v:hlsearch
+        let patt = s:FixPat(@/)
+        silent! if !search('\%#\zs'.patt,'cnW')
             call <SID>StopHL()
-        elseif exists('*reltimestr')
+        elseif exists('*reltimefloat')
             exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
             if g:cool_char =~ '[/?]'
                 let [now, noOf, pos] = [reltime(), [0,0], getpos('.')]
                 for b in [0,1]
-                    while search(@/, 'Wb'[:b])
-                        if reltimestr(reltime(now))[:-6] =~ '[1-9]'
+                    while search(patt, 'Wb'[:b])
+                        if float2nr(round(0.4+reltimefloat(reltime(now))))
                             " time >= 100ms
                             call setpos('.',pos)
                             return
@@ -57,7 +63,8 @@ function! s:StopHL()
     endif
 endfunction
 
-if exists('s:saveh')
+if !exists('*execute')
+    let s:saveh = &highlight
     " toggle highlighting, a workaround for :nohlsearch in autocmds
     function! s:AuNohlsearch()
         noautocmd set highlight+=l:-
@@ -72,7 +79,7 @@ function! s:PlayItCool(old, new)
         " nohls --> hls
         "   set up coolness
         noremap <silent> <Plug>(StopHL) :<C-U>nohlsearch<cr>
-        if exists('s:saveh')
+        if !exists('*execute')
             noremap! <expr> <Plug>(StopHL) <SID>AuNohlsearch()
         else
             noremap! <expr> <Plug>(StopHL) execute('nohlsearch')[-1]
