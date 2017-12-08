@@ -30,7 +30,7 @@ function! s:FixPat(pat)
 endfunction
 
 function! s:StartHL()
-    if v:hlsearch
+    if v:hlsearch && mode() is 'n'
         let patt = s:FixPat(@/)
         silent! if !search('\%#\zs'.patt,'cnW')
             call <SID>StopHL()
