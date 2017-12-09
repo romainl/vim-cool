@@ -25,16 +25,21 @@ if exists('##OptionSet')
     autocmd Cool OptionSet hlsearch call <SID>PlayItCool(v:option_old, v:option_new)
 endif
 
+function! s:FixPat(pat)
+    return (&ignorecase && a:pat !~# '\%(^\|[^\\]\)\%(\\\\\)*\\C' ? '\c' : '').a:pat
+endfunction
+
 function! s:StartHL()
     if v:hlsearch && mode() is 'n'
-        silent! if !search('\%#\zs'.@/,'cnW')
+        let patt = s:FixPat(@/)
+        silent! if !search('\%#\zs'.patt,'cnW')
             call <SID>StopHL()
         elseif exists('*reltimestr')
             exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
             if g:cool_char =~ '[/?]'
                 let [now, noOf, pos] = [reltime(), [0,0], getpos('.')]
                 for b in [0,1]
-                    while search(@/, 'Wb'[:b])
+                    while search(patt, 'Wb'[:b])
                         if reltimestr(reltime(now))[:-6] =~ '[1-9]'
                             " time >= 100ms
                             call setpos('.',pos)
