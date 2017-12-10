@@ -31,15 +31,14 @@ endfunction
 
 function! s:StartHL()
     if v:hlsearch && mode() is 'n'
-        let patt = s:FixPat(@/)
-        silent! if !search('\%#\zs'.patt,'cnW')
+        silent! if !search('\%#\zs'.s:FixPat(@/),'cnW')
             call <SID>StopHL()
         elseif get(g:,'CoolTotalMatches') && exists('*reltimestr')
             exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
             if g:cool_char =~ '[/?]'
                 let [now, noOf, pos] = [reltime(), [0,0], getpos('.')]
                 for b in [0,1]
-                    while search(patt, 'Wb'[:b])
+                    while search(@/, 'Wb'[:b])
                         if reltimestr(reltime(now))[:-6] =~ '[1-9]'
                             " time >= 100ms
                             call setpos('.',pos)
