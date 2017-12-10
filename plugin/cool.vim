@@ -34,7 +34,7 @@ function! s:StartHL()
         let patt = s:FixPat(@/)
         silent! if !search('\%#\zs'.patt,'cnW')
             call <SID>StopHL()
-        elseif exists('*reltimestr')
+        elseif get(g:,'CoolTotalMatches') && exists('*reltimestr')
             exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
             if g:cool_char =~ '[/?]'
                 let [now, noOf, pos] = [reltime(), [0,0], getpos('.')]
