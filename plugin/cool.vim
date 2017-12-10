@@ -30,8 +30,28 @@ function! s:FixPat(pat)
 endfunction
 
 function! s:StartHL()
-    silent! if v:hlsearch && !search('\%#\zs'.s:FixPat(@/),'cnW')
-        call <SID>StopHL()
+    if v:hlsearch && mode() is 'n'
+        let patt = s:FixPat(@/)
+        silent! if !search('\%#\zs'.patt,'cnW')
+            call <SID>StopHL()
+        elseif get(g:,'CoolTotalMatches') && exists('*reltimestr')
+            exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
+            if g:cool_char =~ '[/?]'
+                let [now, noOf, pos] = [reltime(), [0,0], getpos('.')]
+                for b in [0,1]
+                    while search(patt, 'Wb'[:b])
+                        if reltimestr(reltime(now))[:-6] =~ '[1-9]'
+                            " time >= 100ms
+                            call setpos('.',pos)
+                            return
+                        endif
+                        let noOf[!b] += 1
+                    endwhile
+                    call setpos('.',pos)
+                endfor
+                redraw|echo g:cool_char.@/ 'match' noOf[0] + 1 'of' noOf[0] + noOf[1] + 1
+            endif
+        endif
     endif
 endfunction
 
