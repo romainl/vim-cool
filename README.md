@@ -4,7 +4,7 @@ Vim-cool disables search highlighting when you are done searching and re-enables
 
 Vim-cool is cool.
 
-Vim-cool is *experimental*.
+Vim-cool is *experimental*. If you want, by adding `let g:CoolTotalMatches=1` you will enable another new feature: echoing of the number of matches.
 
 ## Requirements
 
