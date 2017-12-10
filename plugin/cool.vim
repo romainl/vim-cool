@@ -26,7 +26,7 @@ if exists('##OptionSet')
 endif
 
 function! s:FixPat(pat)
-    return (&ignorecase && a:pat !~# '\%(^\|[^\\]\)\%(\\\\\)*\\C' ? '\c' : '').a:pat
+    return (&ignorecase && &smartcase && a:pat !~# '\%(^\|[^\\]\)\%(\\\\\)*\u' ? '\c' : '').a:pat
 endfunction
 
 function! s:StartHL()
