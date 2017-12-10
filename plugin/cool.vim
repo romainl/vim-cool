@@ -30,7 +30,7 @@ function! s:FixPat(pat)
         let pos = getpos('.')
         exe "silent! keepjumps norm! /" . histget('/',-1)."\<cr>" 
         call setpos('.',pos)
-        if histget('/',-1) ==# histget('/',-2)
+        if index([histget('/',-2), histget('/',-3)],histget('/',-1)) !~ 1
             call histdel('search',-1)
             return '\c'. a:pat
         endif
