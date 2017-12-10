@@ -26,7 +26,16 @@ if exists('##OptionSet')
 endif
 
 function! s:FixPat(pat)
-    return (&ignorecase && &smartcase && a:pat !~# '\%(^\|[^\\]\)\%(\\\\\)*\%(\u\|\\C\)' ? '\c' : '').a:pat
+    if &ignorecase
+        let pos = getpos('.')
+        exe "silent! keepjumps norm! /" . histget('/',-1)."\<cr>" 
+        call setpos('.',pos)
+        if histget('/',-1) ==# histget('/',-2)
+            call histdel('search',-1)
+            return '\c'. a:pat
+        endif
+    endif
+    return a:pat
 endfunction
 
 function! s:StartHL()
