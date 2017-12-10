@@ -28,11 +28,11 @@ endif
 function! s:FixPat(pat)
     if &ignorecase
         let pos = getpos('.')
-        exe "silent! keepjumps norm! /" . histget('/',-1)."\<cr>" 
+        exe "silent! keepjumps norm! /" . histget('/',-1) . "\<cr>" 
         call setpos('.',pos)
-        if index([histget('/',-3), histget('/',-2)],histget('/',-1)) == 1
+        if histget('/',-1) ==# histget('/',-2)
             call histdel('search',-1)
-            return '\c'. a:pat
+            return '\c' . a:pat
         endif
     endif
     return a:pat
