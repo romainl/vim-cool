@@ -27,9 +27,9 @@ endif
 
 function! s:FixPat(pat)
     if &ignorecase
-        let pos = getpos('.')
+        let pos = winsaveview()
         exe "silent! keepjumps norm! /" . histget('/',-1) . "\<cr>" 
-        call setpos('.',pos)
+        call winrestview(pos)
         if histget('/',-1) ==# histget('/',-2)
             call histdel('search',-1)
             return '\c' . a:pat
