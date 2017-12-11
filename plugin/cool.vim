@@ -28,7 +28,7 @@ endif
 function! s:FixPat(pat)
     if &ignorecase
         let pos = winsaveview()
-        exe "silent! keepjumps norm! /" . histget('/',-1) . "\<cr>" 
+        exe "silent! noautocmd keepjumps norm! /" . histget('/',-1) . "\<cr>" 
         call winrestview(pos)
         if histget('/',-1) ==# histget('/',-2)
             call histdel('search',-1)
