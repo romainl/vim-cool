@@ -27,8 +27,7 @@ endif
 
 function! s:StartHL()
     if v:hlsearch && mode() is 'n'
-        let patt = @/
-        silent! if !search('\%#\zs'.patt,'cnW')
+        silent! if !search('\%#\zs'.@/,'cnW')
             call <SID>StopHL()
         elseif get(g:,'CoolTotalMatches') && exists('*reltimestr')
             exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
@@ -51,7 +50,6 @@ function! s:StartHL()
                         exe "norm! ".(f ? 'n' : 'N')
                     catch
                         call setpos('.',rpos)
-                        norm! l
                         let f += 1
                     endtry
                 endwhile
