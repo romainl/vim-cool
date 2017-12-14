@@ -48,12 +48,15 @@ function! s:StartHL()
                     try
                         let noOf[f]+=1
                         exe "norm! ".(f ? 'n' : 'N')
-                    catch
+                    catch /E\%(486\|38[45]\)/
                         call setpos('.',rpos)
                         let f += 1
                     endtry
                 endwhile
                 call winrestview(pos)
+                if !v:searchforward
+                    call reverse(noOf)
+                endif
                 redraw|echo g:cool_char.@/ 'match' noOf[0] 'of' noOf[0] + noOf[1] - 1
             finally
                 let &wrapscan = ws
