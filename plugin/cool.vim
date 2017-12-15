@@ -26,13 +26,9 @@ if exists('##OptionSet')
 endif
 
 function! s:FixPat(pat)
-    if &ignorecase
-        let pos = winsaveview()
-        exe "noautocmd norm! /" . histget('/') . "\<cr>" 
-        call winrestview(pos)
-        if histget('/') ==# histget('/',-2)
-            return '\c' . a:pat
-        endif
+    if &ignorecase && &smartcase && a:pat !~# '\%(^\|[^\\]\)\%(\\\\\)*\\C' &&
+                \ a:pat !~# '\%(^\|[^\\]\)\u'
+        return '\c'.a:pat
     endif
     return a:pat
 endfunction
