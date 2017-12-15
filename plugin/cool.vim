@@ -25,33 +25,54 @@ if exists('##OptionSet')
     autocmd Cool OptionSet hlsearch call <SID>PlayItCool(v:option_old, v:option_new)
 endif
 
-function! s:FixPat(pat)
-    return (&ignorecase && a:pat !~# '\%(^\|[^\\]\)\%(\\\\\)*\\C' ? '\c' : '').a:pat
-endfunction
-
 function! s:StartHL()
     if v:hlsearch && mode() is 'n'
-        let patt = s:FixPat(@/)
-        silent! if !search('\%#\zs'.patt,'cnW')
-            call <SID>StopHL()
-        elseif get(g:,'CoolTotalMatches') && exists('*reltimestr')
-            exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
-            if g:cool_char =~ '[/?]'
-                let [now, noOf, pos] = [reltime(), [0,0], getpos('.')]
-                for b in [0,1]
-                    while search(patt, 'Wb'[:b])
-                        if reltimestr(reltime(now))[:-6] =~ '[1-9]'
-                            " time >= 100ms
-                            call setpos('.',pos)
-                            return
-                        endif
-                        let noOf[!b] += 1
-                    endwhile
-                    call setpos('.',pos)
-                endfor
-                redraw|echo g:cool_char.@/ 'match' noOf[0] + 1 'of' noOf[0] + noOf[1] + 1
+        let [ws, now, noOf, pos] = [&wrapscan, reltime(), [0,0], winsaveview()]
+        let rpos = getpos('.')
+        try
+            exe "keepjumps go".(line2byte('.')+col('.')-2)
+            keepjumps norm! n
+            if getpos('.') != rpos
+                throw 'a'
             endif
-        endif
+        catch
+            call <SID>StopHL()
+        finally
+            call winrestview(pos)
+        endtry
+        set nows
+        try
+            if get(g:,'CoolTotalMatches') && exists('*reltimestr')
+                exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
+                if g:cool_char !~ '[/?]'
+                    return
+                endif
+                let f = 0
+                while f < 2
+                    if reltimestr(reltime(now))[:-6] =~ '[1-9]'
+                        " time >= 100ms
+                        call winrestview(pos)
+                        return
+                    endif
+                    try
+                        let noOf[f]+=1
+                        exe "keepjumps norm! ".(f ? 'n' : 'N')
+                    catch /E\%(486\|38[45]\)/
+                        call setpos('.',rpos)
+                        let f += 1
+                    endtry
+                endwhile
+                call winrestview(pos)
+                if !v:searchforward
+                    call reverse(noOf)
+                endif
+                redraw|echo g:cool_char.@/ 'match' noOf[0] 'of' noOf[0] + noOf[1] - 1
+            endif
+        finally
+            let &wrapscan = ws
+        endtry
+    else
+        call <SID>StopHL()
     endif
 endfunction
 
