@@ -26,7 +26,10 @@ if exists('##OptionSet')
 endif
 
 function! s:FixPat(pat)
-    return (&ignorecase && a:pat !~# '\%(^\|[^\\]\)\%(\\\\\)*\\C' ? '\c' : '').a:pat
+    if &ignorecase && &smartcase && a:pat =~# '^\\<\k\+\\>$'
+        return '\c'.a:pat
+    endif
+    return a:pat
 endfunction
 
 function! s:StartHL()
