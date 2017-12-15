@@ -26,7 +26,7 @@ if exists('##OptionSet')
 endif
 
 function! s:FixPat(pat)
-    if &ignorecase && &smartcase && a:pat !~# '\%(^\|[^\\]\)\%(\u\|\%(\\\\\)*\\C\)'
+    if &ignorecase && &smartcase && a:pat =~# '^\\<\k\+\\>$'
         return '\c'.a:pat
     endif
     return a:pat
