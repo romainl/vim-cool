@@ -41,9 +41,9 @@ function! s:StartHL()
         finally
             call winrestview(pos)
         endtry
-        try
-            set nows
-            if get(g:,'CoolTotalMatches') && exists('*reltimestr')
+        if get(g:,'CoolTotalMatches') && exists('*reltimestr')
+            try
+                set nows
                 exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
                 if g:cool_char !~ '[/?]'
                     return
@@ -68,10 +68,10 @@ function! s:StartHL()
                     call reverse(noOf)
                 endif
                 redraw|echo g:cool_char.@/ 'match' noOf[0] 'of' noOf[0] + noOf[1] - 1
-            endif
-        finally
-            let &wrapscan = ws
-        endtry
+            finally
+                let &wrapscan = ws
+            endtry
+        endif
     else
         call <SID>StopHL()
     endif
