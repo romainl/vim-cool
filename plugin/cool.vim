@@ -26,54 +26,53 @@ if exists('##OptionSet')
 endif
 
 function! s:StartHL()
-    if v:hlsearch && mode() is 'n'
-        let [pos, rpos] = [winsaveview(), getpos('.')]
-        try
-            silent! exe "keepjumps go".(line2byte('.')+col('.')-2)
-            silent keepjumps norm! n
-            if getpos('.') != rpos
-                throw 0
-            endif
-        catch /^0$\|E486/
-            call <SID>StopHL()
-            return
-        finally
-            call winrestview(pos)
-        endtry
-        if get(g:,'CoolTotalMatches') && exists('*reltimestr')
-            exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
-            if g:cool_char !~ '[/?]'
-                return
-            endif
-            try
-                let [ws, now, noOf] = [&wrapscan, reltime(), [0,0]]
-                set nows
-                let f = 0
-                while f < 2
-                    if reltimestr(reltime(now))[:-6] =~ '[1-9]'
-                        " time >= 100ms
-                        call winrestview(pos)
-                        return
-                    endif
-                    try
-                        let noOf[f]+=1
-                        exe "keepjumps norm! ".(f ? 'n' : 'N')
-                    catch /E38[45]/
-                        call setpos('.',rpos)
-                        let f += 1
-                    endtry
-                endwhile
-                call winrestview(pos)
-                if !v:searchforward
-                    call reverse(noOf)
-                endif
-                redraw|echo g:cool_char.@/ 'match' noOf[0] 'of' noOf[0] + noOf[1] - 1
-            finally
-                let &wrapscan = ws
-            endtry
+    if !v:hlsearch || mode() isnot 'n'
+        return
+    endif
+    let [pos, rpos] = [winsaveview(), getpos('.')]
+    try
+        silent! exe "keepjumps go".(line2byte('.')+col('.')-(v:searchforward ? 2 : 0))
+        silent keepjumps norm! n
+        if getpos('.') != rpos
+            throw 0
         endif
-    else
+    catch /^0$\|E486/
         call <SID>StopHL()
+        return
+    finally
+        call winrestview(pos)
+    endtry
+    if get(g:,'CoolTotalMatches') && exists('*reltimestr')
+        exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
+        if g:cool_char !~ '[/?]'
+            return
+        endif
+        try
+            let [ws, now, noOf] = [&wrapscan, reltime(), [0,0]]
+            set nowrapscan
+            let f = 0
+            while f < 2
+                if reltimestr(reltime(now))[:-6] =~ '[1-9]'
+                    " time >= 100ms
+                    call winrestview(pos)
+                    return
+                endif
+                try
+                    let noOf[f] += 1
+                    exe "keepjumps norm! ".(f ? 'n' : 'N')
+                catch /E38[45]/
+                    call setpos('.',rpos)
+                    let f += 1
+                endtry
+            endwhile
+            call winrestview(pos)
+            if !v:searchforward
+                call reverse(noOf)
+            endif
+            redraw|echo g:cool_char.@/ 'match' noOf[0] 'of' noOf[0] + noOf[1] - 1
+        finally
+            let &wrapscan = ws
+        endtry
     endif
 endfunction
 
