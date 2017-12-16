@@ -27,8 +27,7 @@ endif
 
 function! s:StartHL()
     if v:hlsearch && mode() is 'n'
-        let [ws, now, noOf, pos, rpos] =
-                    \ [&wrapscan, reltime(), [0,0], winsaveview(), getpos('.')]
+        let [pos, rpos] = [winsaveview(), getpos('.')]
         try
             silent! exe "keepjumps go".(line2byte('.')+col('.')-2)
             silent keepjumps norm! n
@@ -42,12 +41,13 @@ function! s:StartHL()
             call winrestview(pos)
         endtry
         if get(g:,'CoolTotalMatches') && exists('*reltimestr')
+            exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
+            if g:cool_char !~ '[/?]'
+                return
+            endif
             try
+                let [ws, now, noOf] = [&wrapscan, reltime(), [0,0]]
                 set nows
-                exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
-                if g:cool_char !~ '[/?]'
-                    return
-                endif
                 let f = 0
                 while f < 2
                     if reltimestr(reltime(now))[:-6] =~ '[1-9]'
@@ -58,7 +58,7 @@ function! s:StartHL()
                     try
                         let noOf[f]+=1
                         exe "keepjumps norm! ".(f ? 'n' : 'N')
-                    catch /E\%(486\|38[45]\)/
+                    catch /E38[45]/
                         call setpos('.',rpos)
                         let f += 1
                     endtry
