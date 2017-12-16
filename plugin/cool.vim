@@ -47,14 +47,12 @@ function! s:StartHL()
         if g:cool_char !~ '[/?]'
             return
         endif
+        let [f, ws, now, noOf] = [0, &wrapscan, reltime(), [0,0]]
+        set nowrapscan
         try
-            let [ws, now, noOf] = [&wrapscan, reltime(), [0,0]]
-            set nowrapscan
-            let f = 0
             while f < 2
                 if reltimestr(reltime(now))[:-6] =~ '[1-9]'
                     " time >= 100ms
-                    call winrestview(pos)
                     return
                 endif
                 try
@@ -65,14 +63,14 @@ function! s:StartHL()
                     let f += 1
                 endtry
             endwhile
-            call winrestview(pos)
-            if !v:searchforward
-                call reverse(noOf)
-            endif
-            redraw|echo g:cool_char.@/ 'match' noOf[0] 'of' noOf[0] + noOf[1] - 1
         finally
+            call winrestview(pos)
             let &wrapscan = ws
         endtry
+        if !v:searchforward
+            call reverse(noOf)
+        endif
+        redraw|echo g:cool_char.@/ 'match' noOf[0] 'of' noOf[0] + noOf[1] - 1
     endif
 endfunction
 
