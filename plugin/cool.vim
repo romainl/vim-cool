@@ -27,21 +27,22 @@ endif
 
 function! s:StartHL()
     if v:hlsearch && mode() is 'n'
-        let [ws, now, noOf, pos] = [&wrapscan, reltime(), [0,0], winsaveview()]
-        let rpos = getpos('.')
+        let [ws, now, noOf, pos, rpos] =
+                    \ [&wrapscan, reltime(), [0,0], winsaveview(), getpos('.')]
         try
-            exe "keepjumps go".(line2byte('.')+col('.')-2)
+            silent! exe "keepjumps go".(line2byte('.')+col('.')-2)
             keepjumps norm! n
             if getpos('.') != rpos
-                throw 'a'
+                throw 0
             endif
-        catch
+        catch /^0$\|E486/
             call <SID>StopHL()
+            return
         finally
             call winrestview(pos)
         endtry
-        set nows
         try
+            set nows
             if get(g:,'CoolTotalMatches') && exists('*reltimestr')
                 exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
                 if g:cool_char !~ '[/?]'
