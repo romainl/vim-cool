@@ -31,7 +31,7 @@ function! s:StartHL()
                     \ [&wrapscan, reltime(), [0,0], winsaveview(), getpos('.')]
         try
             silent! exe "keepjumps go".(line2byte('.')+col('.')-2)
-            keepjumps norm! n
+            silent keepjumps norm! n
             if getpos('.') != rpos
                 throw 0
             endif
