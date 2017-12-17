@@ -30,8 +30,8 @@ function! s:StartHL()
         return
     endif
     let [pos, rpos] = [winsaveview(), getpos('.')]
+    silent! exe "keepjumps go".(line2byte('.')+col('.')-(v:searchforward ? 2 : 0))
     try
-        silent! exe "keepjumps go".(line2byte('.')+col('.')-(v:searchforward ? 2 : 0))
         silent keepjumps norm! n
         if getpos('.') != rpos
             throw 0
