@@ -57,7 +57,7 @@ function! s:StartHL()
                 endif
                 try
                     let noOf[f] += 1
-                    exe "keepjumps norm! ".(f ? 'n' : 'N')
+                    silent exe "keepjumps norm! ".(f ? 'n' : 'N')
                 catch /E38[45]/
                     call setpos('.',rpos)
                     let f += 1
