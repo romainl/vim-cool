@@ -19,7 +19,7 @@ augroup END
 
 if exists('##OptionSet')
     if !exists('*execute')
-        autocmd Cool OptionSet highlight let s:saveh = &highlight
+        autocmd Cool OptionSet highlight let <SID>saveh = &highlight
     endif
     " toggle coolness when hlsearch is toggled
     autocmd Cool OptionSet hlsearch call <SID>PlayItCool(v:option_old, v:option_new)
@@ -36,7 +36,7 @@ function! s:StartHL()
         if getpos('.') != rpos
             throw 0
         endif
-    catch /^0$\|E486/
+    catch /^\%(0$\|Vim[^)]\+):E\%(35\D\|486\)\)/
         call <SID>StopHL()
         return
     finally
