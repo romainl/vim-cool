@@ -36,7 +36,7 @@ function! s:StartHL()
         if getpos('.') != rpos
             throw 0
         endif
-    catch /^\%(0$\|Vim[^)]\+):E\%(35\D\|486\)\)/
+    catch /^\%(0$\|Vim[^)]\+):E\%(35\|486\)\D\)/
         call <SID>StopHL()
         return
     finally
