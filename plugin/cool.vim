@@ -58,7 +58,7 @@ function! s:StartHL()
                 try
                     let noOf[f] += 1
                     silent exe "keepjumps norm! ".(f ? 'n' : 'N')
-                catch /E38[45]/
+                catch /^Vim[^)]\+):E38[45]\D/
                     call setpos('.',rpos)
                     let f += 1
                 endtry
