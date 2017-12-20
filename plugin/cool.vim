@@ -57,7 +57,7 @@ function! s:StartHL()
                 " time >= 100ms
                 return
             endif
-            let noOf[f] += 1
+            let noOf[v:searchforward ? f : !f] += 1
             try
                 silent exe "keepjumps norm! ".(f ? 'n' : 'N')
             catch /^Vim[^)]\+):E38[45]\D/
@@ -69,9 +69,6 @@ function! s:StartHL()
         call winrestview(pos)
         let &wrapscan = ws
     endtry
-    if !v:searchforward
-        call reverse(noOf)
-    endif
     redraw|echo g:cool_char.@/ 'match' noOf[0] 'of' noOf[0] + noOf[1] - 1
 endfunction
 
