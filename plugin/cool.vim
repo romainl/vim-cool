@@ -46,7 +46,8 @@ function! s:StartHL()
         return
     endif
     exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
-    if g:cool_char !~ '[/?]'
+    let cool_char = remove(g:,'cool_char')
+    if cool_char !~ '[/?]'
         return
     endif
     let [f, ws, now, noOf] = [0, &wrapscan, reltime(), [0,0]]
@@ -69,7 +70,7 @@ function! s:StartHL()
         call winrestview(pos)
         let &wrapscan = ws
     endtry
-    redraw|echo remove(g:,'cool_char').@/ 'match' noOf[0] 'of' noOf[0] + noOf[1] - 1
+    redraw|echo cool_char.@/ 'match' noOf[0] 'of' noOf[0] + noOf[1] - 1
 endfunction
 
 function! s:StopHL()
