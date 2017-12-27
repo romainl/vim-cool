@@ -69,7 +69,7 @@ function! s:StartHL()
         call winrestview(pos)
         let &wrapscan = ws
     endtry
-    redraw|echo delete(g:,'cool_char').@/ 'match' noOf[0] 'of' noOf[0] + noOf[1] - 1
+    redraw|echo remove(g:,'cool_char').@/ 'match' noOf[0] 'of' noOf[0] + noOf[1] - 1
 endfunction
 
 function! s:StopHL()
