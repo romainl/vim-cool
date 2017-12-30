@@ -19,40 +19,58 @@ augroup END
 
 if exists('##OptionSet')
     if !exists('*execute')
-        autocmd Cool OptionSet highlight let s:saveh = &highlight
+        autocmd Cool OptionSet highlight let <SID>saveh = &highlight
     endif
     " toggle coolness when hlsearch is toggled
     autocmd Cool OptionSet hlsearch call <SID>PlayItCool(v:option_old, v:option_new)
 endif
 
-function! s:FixPat(pat)
-    return (&ignorecase && a:pat !~# '\%(^\|[^\\]\)\%(\\\\\)*\\C' ? '\c' : '').a:pat
-endfunction
-
 function! s:StartHL()
-    if v:hlsearch && mode() is 'n'
-        let patt = s:FixPat(@/)
-        silent! if !search('\%#\zs'.patt,'cnW')
-            call <SID>StopHL()
-        elseif get(g:,'CoolTotalMatches') && exists('*reltimestr')
-            exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
-            if g:cool_char =~ '[/?]'
-                let [now, noOf, pos] = [reltime(), [0,0], getpos('.')]
-                for b in [0,1]
-                    while search(patt, 'Wb'[:b])
-                        if reltimestr(reltime(now))[:-6] =~ '[1-9]'
-                            " time >= 100ms
-                            call setpos('.',pos)
-                            return
-                        endif
-                        let noOf[!b] += 1
-                    endwhile
-                    call setpos('.',pos)
-                endfor
-                redraw|echo g:cool_char.@/ 'match' noOf[0] + 1 'of' noOf[0] + noOf[1] + 1
-            endif
-        endif
+    if !v:hlsearch || mode() isnot 'n'
+        return
     endif
+    let [pos, rpos] = [winsaveview(), getpos('.')]
+    silent! exe "keepjumps go".(line2byte('.')+col('.')-(v:searchforward ? 2 : 0))
+    try
+        silent keepjumps norm! n
+        if getpos('.') != rpos
+            throw 0
+        endif
+    catch /^\%(0$\|Vim[^)]\+):E\%(35\|486\)\D\)/
+        call <SID>StopHL()
+        return
+    finally
+        call winrestview(pos)
+    endtry
+    if !get(g:,'CoolTotalMatches') || !exists('*reltimestr')
+        return
+    endif
+    exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
+    let cool_char = remove(g:,'cool_char')
+    if cool_char !~ '[/?]'
+        return
+    endif
+    let [f, ws, now, noOf] = [0, &wrapscan, reltime(), [0,0]]
+    set nowrapscan
+    try
+        while f < 2
+            if reltimestr(reltime(now))[:-6] =~ '[1-9]'
+                " time >= 100ms
+                return
+            endif
+            let noOf[v:searchforward ? f : !f] += 1
+            try
+                silent exe "keepjumps norm! ".(f ? 'n' : 'N')
+            catch /^Vim[^)]\+):E38[45]\D/
+                call setpos('.',rpos)
+                let f += 1
+            endtry
+        endwhile
+    finally
+        call winrestview(pos)
+        let &wrapscan = ws
+    endtry
+    redraw|echo cool_char.@/ 'match' noOf[0] 'of' noOf[0] + noOf[1] - 1
 endfunction
 
 function! s:StopHL()
