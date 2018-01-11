@@ -36,7 +36,7 @@ function! s:StartHL()
         if getpos('.') != rpos
             throw 0
         endif
-    catch /^\%(0$\|Vim\>\%(:Interrupt$\)\@!\)/
+    catch /^\%(0$\|Vim\w\@!\%(:Interrupt$\)\@!\)/
         call <SID>StopHL()
         return
     finally
