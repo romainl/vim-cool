@@ -123,4 +123,11 @@ endfunction
 " play it cool
 call <SID>PlayItCool(0, &hlsearch)
 
+nnoremap <silent> n   n:call cool#HLMatch()<CR>
+nnoremap <silent> N   N:call cool#HLMatch()<CR>
+
+cnoremap <expr> <CR> getcmdtype()
+      \ == "/" \|\| getcmdtype()
+      \ == "?" ? "<CR>:call cool#HLMatch() <Bar> redraw<CR>" : "<CR>"
+
 let &cpo = s:save_cpo
