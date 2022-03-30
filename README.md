@@ -36,3 +36,11 @@ Then came [@purpleP](https://github.com/purpleP) and [the game-changing approach
 The current version, essentially a weaponized version of @purpleP's code, doesn't rely on remappings anymore and thus should be devoid of nasty side-effects.
 
 Many thanks to [@bounceme](https://github.com/bounceme) for his help.
+
+## What they say about vim-cool
+
+- **puremourning**, in #vim:
+
+  > vim-cool is by far my favourite plugin
+  >
+  > it's just so... cool.
