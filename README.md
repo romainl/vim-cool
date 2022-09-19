@@ -21,7 +21,7 @@ If you choose manual installation, just put `plugin/cool.vim` where it belongs:
 
 In Vim 8.0 and above, see `:help package`.
 
-# Experimental features
+## Experimental features
 
 * Show number of matches in the command-line:
 
