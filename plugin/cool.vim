@@ -29,6 +29,7 @@ function! s:StartHL()
     if !v:hlsearch || mode() isnot 'n'
         return
     endif
+    let g:cool_is_searching = 1
     let [pos, rpos] = [winsaveview(), getpos('.')]
     silent! exe "keepjumps go".(line2byte('.')+col('.')-(v:searchforward ? 2 : 0))
     try
@@ -77,6 +78,7 @@ function! s:StopHL()
     if !v:hlsearch || mode() isnot 'n'
         return
     else
+        let g:cool_is_searching = 0
         silent call feedkeys("\<Plug>(StopHL)", 'm')
     endif
 endfunction
