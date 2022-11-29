@@ -25,7 +25,11 @@ In Vim 8.0 and above, see `:help package`.
 
 * Show number of matches in the command-line:
 
-      let g:CoolTotalMatches = 1
+      let g:cool_total_matches = 1
+
+* Do something when we are doing `nnnNNnn`, do something else or do nothing when we are not:
+
+      set statusline+=%{get(g:,'cool_is_searching',0)?'Yep':''}
 
 ## Background
 
