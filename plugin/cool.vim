@@ -43,7 +43,7 @@ function! s:StartHL()
     finally
         call winrestview(pos)
     endtry
-    if !get(g:,'CoolTotalMatches') || !exists('*reltimestr')
+    if !get(g:,'cool_total_matches') || !exists('*reltimestr')
         return
     endif
     exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
