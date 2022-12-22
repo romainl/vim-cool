@@ -75,7 +75,7 @@ function! s:StartHL()
 endfunction
 
 function! s:StopHL()
-    if !v:hlsearch || mode() isnot 'n'
+    if !v:hlsearch || mode() isnot 'n' || &buftype == 'terminal'
         return
     else
         let g:cool_is_searching = 0
