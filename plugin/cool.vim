@@ -75,7 +75,7 @@ function! s:StartHL()
 endfunction
 
 function! s:StopHL()
-    if !v:hlsearch || mode() isnot 'n' || &buftype == 'terminal'
+    if !v:hlsearch || mode() isnot 'n'
         return
     else
         let g:cool_is_searching = 0
@@ -101,8 +101,13 @@ function! s:PlayItCool(old, new)
         noremap <silent> <Plug>(StopHL) :<C-U>nohlsearch<cr>
         if !exists('*execute')
             noremap! <expr> <Plug>(StopHL) <SID>AuNohlsearch()
+
+            " If no "execute()", ":tnoremap" isn't probably implemented too.
         else
             noremap! <expr> <Plug>(StopHL) execute('nohlsearch')[-1]
+            if exists(':tnoremap')
+                tnoremap <expr> <Plug>(StopHL) execute('nohlsearch')[-1]
+            endif
         endif
 
         autocmd Cool CursorMoved * call <SID>StartHL()
@@ -112,6 +117,9 @@ function! s:PlayItCool(old, new)
         "   tear down coolness
         nunmap <Plug>(StopHL)
         unmap! <expr> <Plug>(StopHL)
+        if exists(':tunmap')
+            tunmap <Plug>(StopHL)
+        endif
 
         autocmd! Cool CursorMoved
         autocmd! Cool InsertEnter
