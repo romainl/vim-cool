@@ -6,6 +6,8 @@ Vim-cool is cool.
 
 Vim-cool is *experimental*.
 
+![cool](https://user-images.githubusercontent.com/344335/226825463-4ff5e352-ac2e-4f4d-94c7-a8109da7b6db.gif)
+
 ## Requirements
 
 Vim-cool is intended to be used with Vim, **and only Vim**, 7.4.2008 or later. It may or may not work in other editors but they are not and will not be officially supported.
@@ -26,6 +28,8 @@ In Vim 8.0 and above, see `:help package`.
 * Show number of matches in the command-line:
 
       let g:cool_total_matches = 1
+
+  ![demo](https://user-images.githubusercontent.com/344335/226825418-12931cf3-5f89-4375-89be-c98a57e177df.png)
 
 * Do something when we are doing `nnnNNnn`, do something else or do nothing when we are not:
 
