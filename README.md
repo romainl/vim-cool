@@ -23,6 +23,14 @@ If you choose manual installation, just put `plugin/cool.vim` where it belongs:
 
 In Vim 8.0 and above, see `:help package`.
 
+## Setup
+
+The whole assumption behind Vim-cool is that the user enabled search highlighting but they don't want the highlighting to linger on when they are done searching. This implies that the user has the following line in their `vimrc`:
+
+    set hlsearch
+
+That's it. Nothing else to do.
+
 ## Experimental features
 
 * Show number of matches in the command-line:
