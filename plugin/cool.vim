@@ -29,6 +29,8 @@ function! s:StartHL()
     if !v:hlsearch || mode() isnot 'n'
         return
     endif
+    " Highlight the current matching word differently
+    exec '2match IncSearch /\%#' . @/ . '/'
     let g:cool_is_searching = 1
     let [pos, rpos] = [winsaveview(), getpos('.')]
     silent! exe "keepjumps go".(line2byte('.')+col('.')-(v:searchforward ? 2 : 0))
@@ -78,6 +80,7 @@ function! s:StopHL()
     if !v:hlsearch || mode() isnot 'n' || &buftype == 'terminal'
         return
     else
+        2match none
         let g:cool_is_searching = 0
         silent call feedkeys("\<Plug>(StopHL)", 'm')
     endif
