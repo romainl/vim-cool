@@ -25,13 +25,59 @@ if exists('##OptionSet')
     autocmd Cool OptionSet hlsearch call <SID>PlayItCool(v:option_old, v:option_new)
 endif
 
+" Inputs are 1-based (row, col) coordinates into lines.
+" Returns the corresponding zero-based offset into lines->join("\n")
+"
+" These functions (s:PositionToOffset and s:OffsetToPosition) are taken from
+" this workaround to vim's incorrect :goto and line2byte() results when
+" text_props are present:
+" https://github.com/google/vim-codefmt/pull/145
+"
+" Referring to this bug:
+" https://github.com/vim/vim/issues/5930
+function! s:PositionToOffset(row, col, lines) abort
+    let l:offset = a:col - 1 " 1-based to 0-based
+    if a:row > 1
+        for l:line in a:lines[0 : a:row - 2] " 1-based to 0-based, exclude current
+            let l:offset += len(l:line) + 1 " +1 for newline
+        endfor
+    endif
+    return l:offset
+endfunction
+" Input is zero-based offset into lines->join("\n")
+" Returns the 1-based [row, col] coordinates into lines.
+function! s:OffsetToPosition(offset, lines) abort
+    let l:lines_consumed = 0
+    let l:chars_left = a:offset
+    for l:line in a:lines
+        let l:line_len = len(l:line) + 1 " +1 for newline
+        if l:chars_left < l:line_len
+            break
+        endif
+        let l:chars_left -= l:line_len
+        let l:lines_consumed += 1
+    endfor
+    return [l:lines_consumed + 1, l:chars_left + 1] " 0-based to 1-based
+endfunction
+
 function! s:StartHL()
     if !v:hlsearch || mode() isnot 'n'
         return
     endif
     let g:cool_is_searching = 1
     let [pos, rpos] = [winsaveview(), getpos('.')]
-    silent! exe "keepjumps go".(line2byte('.')+col('.')-(v:searchforward ? 2 : 0))
+
+    " :goto line2byte() is buggy when text properties are present:
+    " https://github.com/vim/vim/issues/5930
+    if !has('textprop') || empty(prop_list(line('.')))
+        silent! exe "keepjumps go".(line2byte('.')+col('.')-(v:searchforward ? 2 : 0))
+    else
+        let lines = getline(1, line('$'))
+        let offset = s:PositionToOffset(line('.'), col('.'), lines)
+        let [new_line, new_col] = s:OffsetToPosition(offset - (v:searchforward ? 1 : -1), lines)
+        call cursor(new_line, new_col)
+    endif
+
     try
         silent keepjumps norm! n
         if getpos('.') != rpos
