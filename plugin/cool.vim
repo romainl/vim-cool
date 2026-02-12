@@ -109,6 +109,7 @@ function! s:PlayItCool(old, new)
 
             " If no "execute()", ":tnoremap" isn't probably implemented too.
         else
+            xnoremap <expr> <Plug>(StopHL) execute('nohlsearch')[-1]
             noremap! <expr> <Plug>(StopHL) execute('nohlsearch')[-1]
             if exists(':tnoremap')
                 tnoremap <expr> <Plug>(StopHL) execute('nohlsearch')[-1]
