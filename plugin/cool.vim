@@ -26,7 +26,7 @@ if exists('##OptionSet')
 endif
 
 function! s:StartHL()
-    if !v:hlsearch || mode() isnot 'n'
+    if !v:hlsearch || mode() isnot 'n' || (exists('*popup_list') && !empty(popup_list()))
         return
     endif
     let g:cool_is_searching = 1
