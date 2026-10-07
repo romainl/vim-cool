@@ -138,4 +138,9 @@ endfunction
 " play it cool
 call <SID>PlayItCool(0, &hlsearch)
 
+" allow disabling
+command CoolOff call <SID>PlayItCool(1, 0)
+command CoolOn call <SID>PlayItCool(0, 1)
+command CoolToggle call <SID>PlayItCool(0, !exists('#Cool#CursorMoved'))
+
 let &cpo = s:save_cpo

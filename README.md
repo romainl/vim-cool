@@ -31,6 +31,18 @@ The whole assumption behind Vim-cool is that the user enabled search highlightin
 
 That's it. Nothing else to do.
 
+## Control
+
+If you'd like to temporarily revert to default behavior and keep highlights on for a while, run one of the commands:
+
+    CoolOff
+    CoolToggle
+
+Vim-cool will be re-enabled when you reload Vim or the plugin, or `set hlsearch`, or run one of the commands:
+
+    CoolOn
+    CoolToggle
+
 ## Experimental features
 
 * Show number of matches in the command-line:
